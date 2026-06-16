@@ -144,3 +144,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Database files
+*.db
+!test_data/**/*.db
+
