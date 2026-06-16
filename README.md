@@ -4,7 +4,7 @@ Download all the files and put them in the same directory.
 parseRewind expects rewind.hexpat in there to un-hashcode the ZDOvar names
 
 ```
-python parseRewind.py Your_Rewind_file prefabs.csv Your_Rewind.json
+python parseRewind.py Your_Rewind_file
 ```
 
 

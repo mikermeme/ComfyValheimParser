@@ -309,19 +309,30 @@ def dump_rewind(rewind_file, prefab_csv, output_json, hexpat_file="rewind.hexpat
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python rewind_dump.py world.rewind prefabs.csv output.json")
+    if len(sys.argv) != 2:
+        print("Usage: python rewind_dump.py world.rewind")
         sys.exit(1)
 
-    # Looks for rewind.hexpat in the folder where the dump script lives
+    rewind_file = sys.argv[1]
+    
+    # Automatically generate output JSON path (e.g., world.rewind -> world.json)
+    base_name, _ = os.path.splitext(rewind_file)
+    output_json = f"{base_name}.json"
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Look for prefabs.csv in the same directory as the script
+    prefab_csv_path = os.path.join(script_dir, "prefabs.csv")
+    if not os.path.exists(prefab_csv_path):
+        print(f"Warning: prefabs.csv not found in {script_dir}. Prefab names will default to hashes.")
+        
     hexpat_path = os.path.join(script_dir, "rewind.hexpat")
     if not os.path.exists(hexpat_path):
         hexpat_path = "rewind.hexpat"
 
     dump_rewind(
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
+        rewind_file,
+        prefab_csv_path,
+        output_json,
         hexpat_file=hexpat_path
     )
