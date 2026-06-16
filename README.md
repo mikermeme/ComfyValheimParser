@@ -25,6 +25,7 @@ This toolset also includes a binary parser for `.rewind` files created by the [R
 ## Features
 
 - **Extract all container inventories** from Valheim `.db` world saves into a flat CSV
+- **Export a full world prefab/ZDO dump** — exports a second CSV of every game object in the world, including coordinates, rotations, and serialized property maps
 - **Memory-efficient streaming** — handles massive world files (10GB+) without loading everything into RAM
 - **Parse `.rewind` mod files** — decode binary Rewind exports into human-readable JSON
 - **Name resolution** — translates internal prefab hash codes into readable item/object names using `prefabs.csv` and `rewind.hexpat`
@@ -94,16 +95,24 @@ python parseItems.py Your_Parsed_Rewind.json
 
 ## Usage
 
-### Pipeline 1: World Save (.db) → Inventory CSV
+### Pipeline 1: World Save (.db/rewind) → CSVs
 
-The main exporter reads a Valheim `.db` world save file, converts it to JSON using [valheim-save-tools](https://github.com/Kakoen/valheim-save-tools), then streams through all game objects to find containers and extract their inventories.
+The main exporter reads a Valheim `.db` world save or `.rewind` file, converts it to JSON (using `valheim-save-tools` or `parseRewind.py`), then streams through all game objects to generate two separate CSV files:
+1. An items inventory CSV (`<input_basename>_items.csv`) containing one row per item inside containers.
+2. A full world prefab CSV (`<input_basename>_prefabs.csv`) containing one row per ZDO in the world.
 
 ```bash
-# Basic usage — output defaults to <input_name>_items.csv
+# Basic usage — output defaults to <input_name>_items.csv and <input_name>_prefabs.csv
 python3 parseItems.py /path/to/test_data/myworld.db
 
-# Specify a custom output path
+# Parse a .rewind file directly (automatically decodes to JSON, parses both CSVs, and cleans up)
+python3 parseItems.py /path/to/test_data/myworld.rewind
+
+# Specify a custom items CSV path
 python3 parseItems.py /path/to/test_data/myworld.db -o my_inventory.csv
+
+# Specify a custom prefabs CSV path
+python3 parseItems.py /path/to/test_data/myworld.db --prefabs-output my_prefabs.csv
 
 # If valheim-save-tools.jar is in a different location
 python3 parseItems.py /path/to/test_data/myworld.db --jar /path/to/valheim-save-tools.jar
@@ -122,8 +131,9 @@ python3 parseItems.py /path/to/myworld.json
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `input` | Path to `.db` world save or `.json` export | *(required)* |
-| `-o`, `--output` | Output CSV file path | `<input_name>_items.csv` |
+| `input` | Path to `.db`, `.rewind`, or `.json` export | *(required)* |
+| `-o`, `--output` | Output CSV file path for container items | `<input_name>_items.csv` |
+| `--prefabs-output` | Output CSV file path for the full prefab/ZDO dump | `<input_name>_prefabs.csv` |
 | `--jar` | Path to `valheim-save-tools.jar` | `valheim-save-tools.jar` (current dir) |
 | `--keep-json` | Retain the intermediate JSON after conversion | Deletes it |
 
@@ -179,7 +189,8 @@ The script will also look for `rewind.hexpat` in the same directory as the scrip
 | `test_data/myworld.db` | Sample Valheim world save file |
 | `test_data/myworld.rewind` | Small sample `.rewind` file |
 | `test_data/castle.rewind` | Larger sample `.rewind` file (~2.1 MB) |
-| `test_data/myworld_items.csv` | Pre-generated output from running the exporter on `test_data/myworld.db` |
+| `test_data/myworld_items.csv` | Pre-generated container items output from running the exporter on `test_data/myworld.db` |
+| `test_data/myworld_prefabs.csv` | Pre-generated prefab export output from running the exporter on `test_data/myworld.db` |
 
 ### Other
 
@@ -191,6 +202,36 @@ The script will also look for `rewind.hexpat` in the same directory as the scrip
 ---
 
 ## Output Formats
+
+### Prefab CSV Columns
+
+The CSV produced by `parseItems.py` (via the `--prefabs-output` pipeline) contains one row per ZDO (game object) in the world. It includes all top-level properties and serialized maps of custom data (floats, ints, longs, strings, bytes, vec3s, and quats):
+
+| Column | Description |
+|--------|-------------|
+| `prefab_hash` | Numeric prefab hash (signed 32-bit integer) |
+| `prefab_name` | Human-readable prefab name, or raw numeric hash if unresolved |
+| `position_x/y/z` | World coordinates |
+| `rotation_x/y/z/w` | Quaternion rotation fields |
+| `sector_x/y` | World sector index |
+| `user_id` | Owner Steam ID / placer ID |
+| `zdo_id` | Unique identifier code for the ZDO |
+| `persistent` | Whether the object persists across sessions (`true` or `false`) |
+| `type` | ZDO type identifier code |
+| `distant` | Whether the object is flagged as distant (`true` or `false`) |
+| `owner_revision` | Owner revision counter |
+| `data_revision` | Data revision counter |
+| `user_key` | User key identifier |
+| `time_created` | Creation timestamp value |
+| `floats` | Serialized float property map (`key=val; key2=val2...`) |
+| `vec3s` | Serialized Vector3 property map (`key={"x":x,"y":y,"z":z}`) |
+| `quats` | Serialized Quaternion property map (`key={"x":x,"y":y,"z":z,"w":w}`) |
+| `ints` | Serialized integer property map |
+| `longs` | Serialized long integer property map |
+| `strings` | Serialized string property map (includes the base64 items blob) |
+| `bytes` | Serialized byte arrays (base64 encoded within the value) |
+
+Property maps are formatted as semicolon-separated `key=value` pairs. Nested complex values (such as vectors or quaternions) are JSON-encoded inside their value representation with compact separators.
 
 ### Inventory CSV Columns
 

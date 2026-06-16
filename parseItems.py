@@ -329,6 +329,252 @@ def iterate_zdos(file_path: Path):
             print(f"-> Successfully extracted and parsed {success_count} container ZDOs.")
 
 
+def iterate_all_zdos(file_path: Path):
+    """Memory-efficient iterator that yields every ZDO from a JSON file.
+
+    Uses mmap to stream through the file without loading it into memory.
+    Handles files of any size (10GB+) by parsing one ZDO at a time.
+    Locates the "zdos" or "zdoList" array and iterates through its elements by
+    tracking brace depth and string boundaries.
+    """
+    print("-> Scanning JSON for all ZDO objects (mmap)...")
+
+    with open(file_path, "rb") as f:
+        f.seek(0, os.SEEK_END)
+        size = f.tell()
+        f.seek(0)
+
+        if size == 0:
+            print("-> Warning: The JSON file is empty.")
+            return
+
+        with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+            # 1. Find the "zdos" array key or "zdoList" array key
+            zdos_key = mm.find(b'"zdos"')
+            if zdos_key == -1:
+                zdos_key = mm.find(b'"zdoList"')
+                if zdos_key == -1:
+                    print("-> Warning: No 'zdos' or 'zdoList' array found in JSON.")
+                    return
+
+            array_start = mm.find(b'[', zdos_key)
+            if array_start == -1:
+                return
+
+            # 2. Iterate through array elements
+            pos = array_start + 1
+            zdo_count = 0
+
+            while pos < size:
+                # Skip whitespace and commas
+                while pos < size and mm[pos:pos+1] in (b' ', b'\n', b'\r', b'\t', b','):
+                    pos += 1
+
+                if pos >= size or mm[pos:pos+1] == b']':
+                    break  # End of zdos array
+
+                if mm[pos:pos+1] != b'{':
+                    pos += 1
+                    continue
+
+                # 3. Found start of a ZDO object — scan for its closing brace
+                obj_start = pos
+                depth = 0
+                in_string = False
+
+                while pos < size:
+                    char = mm[pos:pos+1]
+                    if in_string:
+                        if char == b'\\':
+                            pos += 1  # Skip escaped character
+                        elif char == b'"':
+                            in_string = False
+                    else:
+                        if char == b'"':
+                            in_string = True
+                        elif char == b'{':
+                            depth += 1
+                        elif char == b'}':
+                            depth -= 1
+                            if depth == 0:
+                                # 4. Complete ZDO — extract, parse, yield
+                                zdo_bytes = mm[obj_start:pos+1]
+                                try:
+                                    zdo = json.loads(zdo_bytes.decode("utf-8", errors="replace"))
+                                    zdo_count += 1
+                                    yield zdo
+                                except json.JSONDecodeError:
+                                    pass  # Skip malformed ZDO blocks
+                                pos += 1
+                                break
+                    pos += 1
+
+            print(f"-> Iterated {zdo_count} ZDOs for prefab export.")
+
+
+def get_merged_properties(zdo, flat_key, by_name_key):
+    """Merges two dictionaries (flat property map and ByName map) from a ZDO."""
+    res = {}
+    flat_val = zdo.get(flat_key)
+    if isinstance(flat_val, dict):
+        res.update(flat_val)
+    by_name_val = zdo.get(by_name_key)
+    if isinstance(by_name_val, dict):
+        res.update(by_name_val)
+    return res
+
+
+def serialize_property_map(prop_dict: dict) -> str:
+    """Serializes a property map dictionary into a semicolon-separated string.
+    
+    Simple values are serialized as key=value.
+    Complex values (like vec3/quat dictionaries) are serialized as key={"x":1,"y":2,"z":3}
+    without unnecessary spacing.
+    """
+    parts = []
+    for k, v in prop_dict.items():
+        if isinstance(v, dict):
+            v_str = json.dumps(v, separators=(',', ':'))
+        else:
+            v_str = str(v)
+        parts.append(f"{k}={v_str}")
+    return "; ".join(parts)
+
+
+def write_prefabs_csv(json_path: Path, output_csv: Path):
+    """Generates the prefabs CSV file from the JSON file by streaming ZDOs."""
+    print("-> Streaming JSON and processing all prefab objects...")
+    
+    csv_headers = [
+        "prefab_hash",
+        "prefab_name",
+        "position_x",
+        "position_y",
+        "position_z",
+        "rotation_x",
+        "rotation_y",
+        "rotation_z",
+        "rotation_w",
+        "sector_x",
+        "sector_y",
+        "user_id",
+        "zdo_id",
+        "persistent",
+        "type",
+        "distant",
+        "owner_revision",
+        "data_revision",
+        "user_key",
+        "time_created",
+        "floats",
+        "vec3s",
+        "quats",
+        "ints",
+        "longs",
+        "strings",
+        "bytes"
+    ]
+
+    total_zdos = 0
+
+    with open(output_csv, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader()
+
+        for zdo in iterate_all_zdos(json_path):
+            total_zdos += 1
+
+            prefab_hash = zdo.get("prefabHash")
+            if prefab_hash is None:
+                prefab_hash = zdo.get("prefab")
+            
+            prefab_name = zdo.get("prefabName")
+            if not prefab_name and prefab_hash is not None:
+                prefab_name = str(prefab_hash)
+            
+            pos = zdo.get("position") or {}
+            rot = zdo.get("rotation") or {}
+            sec = zdo.get("sector") or {}
+
+            # Property maps normalization and serialization
+            floats_map = get_merged_properties(zdo, "floats", "floatsByName")
+            
+            # vec3s: check vec3s, vector3s, vector3sByName
+            vec3s_map = {}
+            for k in ("vec3s", "vector3s"):
+                val = zdo.get(k)
+                if isinstance(val, dict):
+                    vec3s_map.update(val)
+            val_by_name = zdo.get("vector3sByName")
+            if isinstance(val_by_name, dict):
+                vec3s_map.update(val_by_name)
+
+            quats_map = get_merged_properties(zdo, "quats", "quatsByName")
+            ints_map = get_merged_properties(zdo, "ints", "intsByName")
+            longs_map = get_merged_properties(zdo, "longs", "longsByName")
+            strings_map = get_merged_properties(zdo, "strings", "stringsByName")
+            
+            # bytes: check bytes, byteArrays, byteArraysByName
+            bytes_map = {}
+            for k in ("bytes", "byteArrays"):
+                val = zdo.get(k)
+                if isinstance(val, dict):
+                    bytes_map.update(val)
+            val_by_name = zdo.get("byteArraysByName")
+            if isinstance(val_by_name, dict):
+                bytes_map.update(val_by_name)
+
+            # Handle persistent and distant conversions to lowercase strings
+            persistent_val = zdo.get("persistent")
+            if persistent_val is True:
+                persistent_str = "true"
+            elif persistent_val is False:
+                persistent_str = "false"
+            else:
+                persistent_str = str(persistent_val) if persistent_val is not None else ""
+
+            distant_val = zdo.get("distant")
+            if distant_val is True:
+                distant_str = "true"
+            elif distant_val is False:
+                distant_str = "false"
+            else:
+                distant_str = str(distant_val) if distant_val is not None else ""
+
+            writer.writerow({
+                "prefab_hash": prefab_hash if prefab_hash is not None else "",
+                "prefab_name": prefab_name if prefab_name is not None else "",
+                "position_x": pos.get("x", ""),
+                "position_y": pos.get("y", ""),
+                "position_z": pos.get("z", ""),
+                "rotation_x": rot.get("x", ""),
+                "rotation_y": rot.get("y", ""),
+                "rotation_z": rot.get("z", ""),
+                "rotation_w": rot.get("w", ""),
+                "sector_x": sec.get("x", ""),
+                "sector_y": sec.get("y", ""),
+                "user_id": zdo.get("userID", ""),
+                "zdo_id": zdo.get("zdoID", ""),
+                "persistent": persistent_str,
+                "type": zdo.get("type", ""),
+                "distant": distant_str,
+                "owner_revision": zdo.get("ownerRevision", ""),
+                "data_revision": zdo.get("dataRevision", ""),
+                "user_key": zdo.get("userKey", ""),
+                "time_created": zdo.get("timeCreated", ""),
+                "floats": serialize_property_map(floats_map),
+                "vec3s": serialize_property_map(vec3s_map),
+                "quats": serialize_property_map(quats_map),
+                "ints": serialize_property_map(ints_map),
+                "longs": serialize_property_map(longs_map),
+                "strings": serialize_property_map(strings_map),
+                "bytes": serialize_property_map(bytes_map)
+            })
+
+    print(f"-> Cataloged {total_zdos} prefabs / ZDOs!")
+    print(f"-> Prefabs table saved to: '{output_csv}'")
+
+
 # --- MAIN PIPELINE EXECUTIVE ---
 
 def main():
@@ -344,6 +590,10 @@ def main():
         help="Output CSV path. Defaults to <input_name>_items.csv"
     )
     parser.add_argument(
+        "--prefabs-output",
+        help="Output CSV path for prefabs. Defaults to <input_name>_prefabs.csv"
+    )
+    parser.add_argument(
         "--jar", 
         default="valheim-save-tools.jar",
         help="Path to the 'valheim-save-tools.jar' CLI utility. Defaults to search in current directory."
@@ -351,7 +601,7 @@ def main():
     parser.add_argument(
         "--keep-json", 
         action="store_true",
-        help="If converting a .db, keep the intermediate generated .json file."
+        help="If converting a .db or .rewind, keep the intermediate generated .json file."
     )
     args = parser.parse_args()
 
@@ -363,7 +613,7 @@ def main():
     json_path = None
     is_temp_json = False
 
-    # 1. Process World Save .db file if provided
+    # 1. Process World Save .db file or .rewind file if provided
     if input_path.suffix.lower() == ".db":
         if not shutil.which("java"):
             print("Error: 'java' is not installed or not in system PATH. Required to parse .db archives.", file=sys.stderr)
@@ -388,41 +638,64 @@ def main():
         except subprocess.CalledProcessError as e:
             print(f"Error: Failed converting .db file: {e}", file=sys.stderr)
             sys.exit(1)
+    elif input_path.suffix.lower() == ".rewind":
+        script_dir = Path(__file__).resolve().parent
+        rewind_script = script_dir / "parseRewind.py"
+        if not rewind_script.exists():
+            print(f"Error: '{rewind_script}' not found.", file=sys.stderr)
+            sys.exit(1)
+
+        temp_json_path = input_path.with_suffix(".json")
+        print(f"-> Converting '{input_path.name}' to JSON via parseRewind.py...")
+        cmd = [sys.executable, str(rewind_script), str(input_path)]
+        
+        try:
+            subprocess.run(cmd, check=True)
+            print("-> Successfully generated intermediate JSON.")
+            json_path = temp_json_path
+            is_temp_json = True
+        except subprocess.CalledProcessError as e:
+            print(f"Error: Failed converting .rewind file: {e}", file=sys.stderr)
+            sys.exit(1)
     else:
         json_path = input_path
 
-    # Determine Output Name
+    # Determine Output Names
     output_csv = Path(args.output) if args.output else input_path.with_name(f"{input_path.stem}_items.csv")
-
-    # 2. Extract and Catalog Items from Containers
-    print("-> Streaming JSON and processing container objects...")
-    
-    csv_headers = [
-        "container_prefab",
-        "container_prefab_name",
-        "container_x",
-        "container_y",
-        "container_z",
-        "container_sector_x",
-        "container_sector_y",
-        "container_creator_id",
-        "container_custom_name",
-        "item_prefab",
-        "item_stack",
-        "item_durability",
-        "item_grid_x",
-        "item_grid_y",
-        "item_quality",
-        "item_variant",
-        "item_crafter_id",
-        "item_crafter_name",
-        "item_custom_data"
-    ]
-
-    total_containers = 0
-    total_items = 0
+    output_prefabs_csv = Path(args.prefabs_output) if args.prefabs_output else input_path.with_name(f"{input_path.stem}_prefabs.csv")
 
     try:
+        # 2. Extract and Catalog Prefabs (ZDOs)
+        write_prefabs_csv(json_path, output_prefabs_csv)
+
+        # 3. Extract and Catalog Items from Containers
+        print("-> Streaming JSON and processing container objects...")
+        
+        csv_headers = [
+            "container_prefab",
+            "container_prefab_name",
+            "container_x",
+            "container_y",
+            "container_z",
+            "container_sector_x",
+            "container_sector_y",
+            "container_creator_id",
+            "container_custom_name",
+            "item_prefab",
+            "item_stack",
+            "item_durability",
+            "item_grid_x",
+            "item_grid_y",
+            "item_quality",
+            "item_variant",
+            "item_crafter_id",
+            "item_crafter_name",
+            "item_custom_data"
+        ]
+
+        total_containers = 0
+        total_items = 0
+
         with open(output_csv, "w", newline="", encoding="utf-8") as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
             writer.writeheader()
@@ -487,7 +760,7 @@ def main():
 
     finally:
         # Cleanup temporary JSON if we generated it from a .db file
-        if is_temp_json and json_path.exists():
+        if is_temp_json and json_path and json_path.exists() and not args.keep_json:
             os.remove(json_path)
             print("-> Cleaned up temporary JSON file.")
 
