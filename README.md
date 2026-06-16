@@ -65,6 +65,33 @@ python3 parseRewind.py test_data/myworld.rewind prefabs.csv output.json
 
 ---
 
+## Original Author's Quick Guide
+
+**parseRewind** turns rewind files into json.
+
+Download all the files and put them in the same directory.
+`parseRewind.py` expects `rewind.hexpat` in there to un-hashcode the ZDOvar names.
+
+```bash
+python parseRewind.py Your_Rewind_file
+```
+
+**parseItems** takes `.db` world saves or the `.json` output from either `valheim-save-tools` or `parseRewind`. It will call `valheim-save-tools` and make a temporary json if you point it at a world file.
+
+```bash
+python parseItems.py Your_World_Save.db
+```
+or
+```bash
+python parseItems.py Your_Parsed_World_Save.json
+```
+or
+```bash
+python parseItems.py Your_Parsed_Rewind.json
+```
+
+---
+
 ## Usage
 
 ### Pipeline 1: World Save (.db) → Inventory CSV
