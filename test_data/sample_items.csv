@@ -1,0 +1,48 @@
+container_prefab,container_prefab_name,container_x,container_y,container_z,container_sector_x,container_sector_y,container_creator_id,container_custom_name,item_prefab,item_stack,item_durability,item_grid_x,item_grid_y,item_quality,item_variant,item_crafter_id,item_crafter_name,item_custom_data
+-819997397,TreasureChest_dvergrtown,4688.9716796875,41.672271728515625,-6872.5625,73,-107,-484064227,,BoltCarapace,100,100.0,0,1,1,0,-484064227,<#0f0>ᴍɪᴋᴇʀ</color>,
+-819997397,TreasureChest_dvergrtown,4688.9716796875,41.672271728515625,-6872.5625,73,-107,-484064227,,BoltCarapace,100,100.0,1,1,1,0,-484064227,<#0f0>ᴍɪᴋᴇʀ</color>,
+-819997397,TreasureChest_dvergrtown,4688.9716796875,41.672271728515625,-6872.5625,73,-107,-484064227,,BoltCarapace,100,100.0,0,0,1,0,-484064227,<#0f0>ᴍɪᴋᴇʀ</color>,
+-819997397,TreasureChest_dvergrtown,4688.9716796875,41.672271728515625,-6872.5625,73,-107,-484064227,,BoltCarapace,100,100.0,1,0,1,0,-484064227,<#0f0>ᴍɪᴋᴇʀ</color>,
+-1181865690,piece_gift1,4663.783203125,38.03062438964844,-6835.8583984375,73,-107,2192339993,,SledgeIron,1,1450.0,0,0,28,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align>","engravings.craftername=pid: -484064227, ts: 1773906332, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,0,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,4,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,0,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,0,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,4,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,4,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,0,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,4,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,6,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,6,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,6,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,6,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,2,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,2,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,2,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,2,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,1,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,1,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,1,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,1,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,3,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,3,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,3,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,3,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,5,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,5,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,5,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,5,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,7,0,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,7,1,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,7,2,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4690.86181640625,37.849998474121094,-6875.3203125,73,-107,-484064227,,Coins,67,100.0,7,3,1,0,0,,
+-819997397,TreasureChest_dvergrtown,4684.1123046875,38.88042449951172,-6865.541015625,73,-107,-484064227,,StaffIceShards,1,1000.0,0,0,17,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align>","engravings.craftername=pid: -484064227, ts: 1773906337, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+1008822310,TreasureChest_dvergrtower,4690.072265625,34.045570373535156,-6875.6611328125,73,-107,-484064227,,ArmorMageLegs,1,2400.0,0,0,8,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align>","engravings.craftername=pid: -484064227, ts: 1773906214, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+-1181865690,piece_gift1,4651.99072265625,67.45883178710938,-6819.23828125,73,-107,2192339993,,MushroomBlue,1,100.0,0,0,1,0,0,,
+-1181865688,piece_gift3,4674.37353515625,38.37471008300781,-6790.775390625,73,-106,-484064227,,Demister,1,100.0,0,0,1,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align><br>Not a unique.","engravings.craftername=pid: -484064227, ts: 1774020538, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+-1181865688,piece_gift3,4674.37353515625,38.37471008300781,-6790.775390625,73,-106,-484064227,,Demister,1,100.0,1,0,1,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align><br>Not a unique.","engravings.craftername=pid: -484064227, ts: 1774020536, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+-1181865688,piece_gift3,4674.37353515625,38.37471008300781,-6790.775390625,73,-106,-484064227,,Demister,1,100.0,2,0,1,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align><br>Not a unique.","engravings.craftername=pid: -484064227, ts: 1774020534, prev: <#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align><br>Not a unique."
+-1181865690,piece_gift1,4686.18017578125,34.03062438964844,-6847.32421875,73,-107,2192339993,,MushroomBlue,1,100.0,0,0,1,0,0,,
+1008822310,TreasureChest_dvergrtower,4664.41015625,33.84999084472656,-6837.078125,73,-107,-484064227,,HelmetMage,1,2400.0,0,0,8,0,-484064227,"<#AAA>ᴍɪᴋᴇʀ ⁱⁿ ᵗʳⁱᵇᵘᵗᵉ ᵗᵒ</color><br><align=""center""><#8256AD>Re</color><#9267BB>in</color><#A378CA>a B</color><#BD92E1>or</color><#CEA3F0>g ★ </color><#CEA3F0>Cr</color><#BD92E1>ea</color><#AC81D2>to</color><#9B6FC3>r</color></align>","engravings.craftername=pid: -484064227, ts: 1773906205, prev: <#0f0>ᴍɪᴋᴇʀ</color>"
+-1181865690,piece_gift1,4653.0283203125,43.03062438964844,-6815.1806640625,73,-106,2192339993,,MushroomBlue,1,100.0,0,0,1,0,0,,
+-1181865690,piece_gift1,4676.9775390625,34.03062438964844,-6851.77734375,73,-107,2192339993,,MushroomBlue,1,100.0,0,0,1,0,0,,
